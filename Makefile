@@ -6,7 +6,7 @@ run_options := $(filter-out $@,$(MAKECMDGOALS))
 	compare maxcost medcost mincost modifiers record wasm \
 	publish-chromium publish-edge publish-firefox \
 	publish-dev-chromium publish-dev-firefox \
-	upload-firefox upload-dev-firefox
+	upload-firefox upload-dev-firefox release
 
 sources := ./dist/version $(shell find ./assets -type f) $(shell find ./src -type f)
 platform := $(wildcard platform/*/*)
@@ -169,6 +169,9 @@ upload-dev-firefox:
 		storeid=uBlock0@raymondhill.net \
 		channel=unlisted \
 		updatepath=./dist/firefox/updates.json
+
+release:
+	bash tools/release.sh
 
 # Not real targets, just convenient for auto-completion at shell prompt
 compare:

@@ -1,6 +1,7 @@
 [submodule "platform/mv3/extension/lib/codemirror/codemirror-ubol"]
 	path = platform/mv3/extension/lib/codemirror/codemirror-ubol
 	url = https://github.com/gorhill/codemirror-ubol.git
+	ignore = dirty
 [submodule "publish-extension"]
 	path = publish-extension
 	url = https://github.com/gorhill/publish-extension.git
