@@ -128,6 +128,7 @@ const fromNetFilter = async function(rawFilter) {
         trustedSource: true,
         maxTokenLength: staticNetFilteringEngine.MAX_TOKEN_LENGTH,
         nativeCssHas: vAPI.webextFlavor.env.includes('native_css_has'),
+        canFilterResponseBody: µb.canFilterResponseData,
     });
     parser.parse(rawFilter);
 
@@ -165,6 +166,7 @@ const fromExtendedFilter = async function(details) {
     const parser = new sfp.AstFilterParser({
         trustedSource: true,
         nativeCssHas: vAPI.webextFlavor.env.includes('native_css_has'),
+        canFilterResponseBody: µb.canFilterResponseData,
     });
     parser.parse(details.rawFilter);
     let needle;
@@ -174,21 +176,23 @@ const fromExtendedFilter = async function(details) {
         needle = parser.getResponseheaderName();
     }
 
+    const fctxt = µb.filteringContext
+        .duplicate()
+        .setURL(details.url)
+        .setDocHostname(details.dochn)
+        .setTabHostname(details.tabhn);
+    fctxt.setType('generichide');
+    const ignoreGeneric = staticNetFilteringEngine.matchRequest(fctxt, 0b11) === 2;
+    fctxt.setType('specifichide');
+    const ignoreSpecific = staticNetFilteringEngine.matchRequest(fctxt, 0b11) === 2;
+
     worker.postMessage({
         what: 'fromExtendedFilter',
         id,
         url: details.url,
         domain: domainFromHostname(hostname),
-        ignoreGeneric:
-            staticNetFilteringEngine.matchRequestReverse(
-                'generichide',
-                details.url
-            ) === 2,
-        ignoreSpecific:
-            staticNetFilteringEngine.matchRequestReverse(
-                'specifichide',
-                details.url
-            ) === 2,
+        ignoreGeneric,
+        ignoreSpecific,
         rawFilter: details.rawFilter,
         needle,
     });

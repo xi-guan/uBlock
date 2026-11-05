@@ -52,8 +52,12 @@ class Editor {
             }),
         ]);
         const rulesetDetails = await sendMessage({ what: 'getRulesetDetails' });
+        const reImported = /^[a-z-]+:\/\//;
         const parent = qs$('#editors optgroup');
         for ( const details of rulesetDetails ) {
+            if ( reImported.test(details.id) ) {
+                if ( details.enabled !== true ) { continue; }
+            }
             const option = document.createElement('option');
             option.value = `dnr.ro.${details.id}`;
             option.textContent = details.name;
@@ -93,7 +97,9 @@ class Editor {
             readOnly: this.isReadOnly(),
         };
         viewConfig.panels = [ this.ioPanel, this.summaryPanel, ...this.panels ];
-        this.view = self.cm6.createEditorView(viewConfig, qs$('#cm-container'));
+        this.view = self.cm6.createEditorView(viewConfig,
+            qs$('section[data-pane="develop"] .cm-container')
+        );
         this.lastSavedText = text;
         self.cm6.foldAll(this.view);
         self.cm6.resetUndoRedo(this.view);
@@ -206,8 +212,8 @@ class Editor {
     updateView() {
         const { doc } = this.view.state;
         const changed = this.editorTextChanged();
-        dom.attr('#apply', 'disabled', changed ? null : '');
-        dom.attr('#revert', 'disabled', changed ? null : '');
+        dom.attr('#developSave', 'disabled', changed ? null : '');
+        dom.attr('#developRevert', 'disabled', changed ? null : '');
         if ( typeof this.editor.updateView !== 'function' ) { return; }
         let { start, end } = this.modifiedRange;
         if ( start === 0 || end === 0 ) { return; }
@@ -244,16 +250,16 @@ class Editor {
         const config = {
             dom: root,
             mount: ( ) => {
-                dom.on('#apply', 'click', ( ) => {
+                dom.on('#developSave', 'click', ( ) => {
                     this.saveEditorText();
                 });
-                dom.on('#revert', 'click', ( ) => {
+                dom.on('#developRevert', 'click', ( ) => {
                     this.revertEditorText();
                 });
-                dom.on('#import', 'click', ( ) => {
+                dom.on('#developImport', 'click', ( ) => {
                     this.importFromFile()
                 });
-                dom.on('#export', 'click', ( ) => {
+                dom.on('#developExport', 'click', ( ) => {
                     this.exportToFile();
                 });
             }

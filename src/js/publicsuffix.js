@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a comprehensive, efficient content blocker
-    Copyright (C) 2025-present Raymond Hill
+    Copyright (C) 2026-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,20 +19,19 @@
     Home: https://github.com/gorhill/uBlock
 */
 
-function patchRule(rule, out) {
-    const { condition } = rule;
-    if ( Array.isArray(condition.responseHeaders) ) {
-        if ( condition.regexFilter === undefined ) { return; }
-    }
-    out.push(rule);
-    return rule;
-}
+/******************************************************************************/
 
-export function patchRuleset(ruleset) {
-    const out = [];
-    for ( const rule of ruleset ) {
-        if ( patchRule(rule, out) ) { continue; }
-        console.log(`\tReject ${JSON.stringify(rule)}`);
-    }
-    return out;
-}
+const publicSuffix = globalThis.browser?.publicSuffix;
+
+export default publicSuffix ? {
+    getDomain(hostname) {
+        if ( hostname === '' ) { return ''; }
+        try {
+            return publicSuffix.getDomain(hostname, { allowUnknownSuffix: true }) ?? ''
+        } catch {
+        };
+        return '';
+    },
+} : await import('../lib/publicsuffixlist/publicsuffixlist.js').then(module =>
+    module['default']
+);
