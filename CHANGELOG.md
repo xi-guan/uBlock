@@ -1,3 +1,9 @@
+- [Improve `json-edit` scriptlet](https://github.com/gorhill/uBlock/commit/d4d6e75001)
+
+----------
+
+# 1.76.0
+
 - [Prevent `war:`-related filters for the time being](https://github.com/gorhill/uBlock/commit/150df125fd)
 - [Validate about to be created filter in element picker](https://github.com/gorhill/uBlock/commit/b1f7d27c87)
 - [Prevent re-entrancy with recursive operator in JSONPath](https://github.com/gorhill/uBlock/commit/b6fec9089f)
@@ -15,6 +21,12 @@
 - [Improve jsonl-edit-fetch-response/jsonl-edit-xhr-response scriptlets](https://github.com/gorhill/uBlock/commit/42bcca027b)
 - [Export "My filters" content as an array in JSON backup file](https://github.com/gorhill/uBlock/commit/80f5a99fe4)
 - [Improve `prevent-clipboard-write` scriptlet](https://github.com/gorhill/uBlock/commit/e530864c46)
+
+----------
+
+# 1.75.4
+
+- [Launch element picker only with a verified secret token](https://github.com/gorhill/uBlock/commit/9859477ebc)
 
 ----------
 
